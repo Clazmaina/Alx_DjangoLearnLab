@@ -23,14 +23,25 @@ def run_queries():
     for book in books_by_jane:
         print(book.title)
 
+    # Example: Query all books by a specific author
+    author_name = "Jane Austen" 
+    try:
+        author = Author.objects.get(name=author_name)
+        print(f"\nBooks by {author.name}:")
+        books_by_author = Book.objects.filter(author=author)
+        for book in books_by_author:
+            print(book.title)
+    except Author.DoesNotExist:
+        print(f"Author '{author_name}' not found.")
+
 print("\nBooks in Main Library:")
 library_name = "Main Library"
-try:  # Add the try block here
+try: 
     library = Library.objects.get(name=library_name)
     books_in_main = library.books.all()
     for book in books_in_main:
         print(book.title)
-except Library.DoesNotExist:  # The except block is now correctly associated with the try block
+except Library.DoesNotExist:
     print(f"Library '{library_name}' not found.")
 
     print("\nLibrarian for Branch Library:")
