@@ -28,6 +28,6 @@ from . import views
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
-    path('logout/', views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', views.LogoutView.as_view(template_name='login'), name='logout'),
     # ... your other URL patterns ...
 ]
