@@ -14,7 +14,7 @@ from django.db import models
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True,blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/',null=True,blank=True)
-
+    models.ImageField(upload_to='profile_photos/',null=True,blank=True)
     def __str__(self):
         return self.username
     
@@ -49,4 +49,32 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
+        return self.username
+    
+# In your bookshelf/models.py
+from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.db import models
+
+class CustomUser(AbstractUser):
+    date_of_birth = models.DateField(null=True, blank=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+        related_name="customuser_set", # Add this line
+        related_query_name="user",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name="customuser_set", # Add this line
+        related_query_name="user",
+    )
+
+    def _str_(self):
         return self.username
