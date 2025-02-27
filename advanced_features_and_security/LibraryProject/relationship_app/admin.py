@@ -9,4 +9,13 @@ class CustomUserAdmin(UserAdmin):
                                                )
     
     admin.site.register(CustomUser,CustomUserAdmin)
-    
+
+from django.contrib import admin
+from .models import CustomUser
+from django.contrib.auth.admin import UserAdmin
+#Import UserAdmin
+
+class CustomUserAdmin(UserAdmin):
+    pass 
+admin.site.register(CustomUser,CustomUserAdmin)
+
