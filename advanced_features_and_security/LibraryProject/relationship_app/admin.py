@@ -16,5 +16,8 @@ from django.contrib.auth.admin import UserAdmin
 #Import UserAdmin
 
 class CustomUserAdmin(UserAdmin):
-    pass 
-["admin.site.register(CustomUser, CustomUserAdmin)"]
+    fieldsets = UserAdmin.fieldsets + (('Additional Info',{'fields':('date_of_birth','profile_photo')}),
+                                       )
+    add_fieldsets = UserAdmin.add_fieldsets + (('Additional Info', {'fields': ('date_of_birth','profile_photo')}),
+                                               )
+    ["admin.site.register(CustomUser, CustomUserAdmin)"]
