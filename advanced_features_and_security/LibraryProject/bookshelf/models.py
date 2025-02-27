@@ -37,5 +37,13 @@ class CustomUser(AbstractUser):
 
     objects = CustomUserManager()
 
+    class Meta:
+        permissions = [
+            ("can_create", "Can create book"),
+            ("can_delete", "Can delete book"),
+            ("can_edit", "Can edit book")
+            ("can_view", "Can view book"),
+        ]
+
     def _str_(self):
         return self.username
