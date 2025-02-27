@@ -1,0 +1,10 @@
+@permission_required('relationship_app.can_add_book')
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books')  # Replace with your book list view
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/add_book.html', {'form': form})
