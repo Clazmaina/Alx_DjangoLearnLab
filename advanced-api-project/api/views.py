@@ -1,9 +1,8 @@
 from rest_framework import generics, filters, permissions
-from django_filters import rest_framework
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
 from .serializers import BookSerializer
-from .permissions import IsAuthorOrReadOnly
+from .permissions import IsAuthorOrReadOnly 
 
 class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
@@ -15,7 +14,7 @@ class BookListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user) 
+        serializer.save(created_by=self.request.user)
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
