@@ -2,6 +2,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, ListView, D
 from .models import Book
 from django.urls import reverse_lazy
 from .forms import BookForm
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 class BookListView(ListView):
     model = Book
