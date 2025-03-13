@@ -16,7 +16,7 @@ class BookCRUDTests(APITestCase):
         # Create a token for the user
         self.token = Token.objects.create(user=self.user)
         # Authenticate the client with the token
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.client.login(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
     def test_create_book(self):
         url = reverse('book-list')
