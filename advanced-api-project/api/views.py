@@ -1,29 +1,23 @@
-from django.views.generic import CreateView, UpdateView, DeleteView, ListView, DetailView
+from rest_framework import generics, filters, permissions
+from django_filters import rest_framework
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book
-from django.urls import reverse_lazy
-from .forms import BookForm 
+from .serializers import BookSerializer
+from .permissions import IsAuthorOrReadOnly
 
-class BookListView(ListView):
-    model = Book
-    template_name = 'book_list.html' 
+class BookListView(generics.ListCreateAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['title', 'author', 'publication_year']
+    search_fields = ['title', 'author__name']
+    ordering_fields = ['title', 'publication_year']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-class BookDetailView(DetailView):
-    model = Book
-    template_name = 'book_detail.html' 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user) 
 
-class BookCreateView(CreateView):
-    model = Book
-    form_class = BookForm
-    template_name = 'book_form.html' 
-    success_url = reverse_lazy('book-list')
-
-class BookUpdateView(UpdateView):
-    model = Book
-    form_class = BookForm
-    template_name = 'book_form.html' 
-    success_url = reverse_lazy('book-list')
-
-class BookDeleteView(DeleteView):
-    model = Book
-    template_name = 'book_confirm_delete.html'
-    success_url = reverse_lazy('book-list')
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthorOrReadOnly]
