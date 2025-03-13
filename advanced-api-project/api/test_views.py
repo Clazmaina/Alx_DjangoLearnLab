@@ -22,6 +22,6 @@ class BookCRUDTests(APITestCase):
         url = reverse('book-list')
         data = {"title": "New Book", "author": self.author.id, "publication_year": 2024}
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 2)  
        
