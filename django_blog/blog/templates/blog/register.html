@@ -1,0 +1,26 @@
+{% load static %}
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<h2>Register</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>
+        {{ form.username.label_tag }}<br>
+        {{ form.username }}
+    </p>
+    <p>
+        {{ form.email.label_tag }}<br>
+        {{ form.email }}
+    </p>
+    <p>
+        {{ form.password.label_tag }}<br>
+        {{ form.password }}
+    </p>
+    <p>
+        {{ form.password2.label_tag }}<br>
+        {{ form.password2 }}
+    </p>
+    <button type="submit">Register</button>
+</form>
+{% endblock %}

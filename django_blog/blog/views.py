@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm  # Corrected import
 
 def register(request):
     if request.method == 'POST':
@@ -20,8 +20,8 @@ def profile(request):
         form = UserChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            update_session_auth_hash(request,form.user)
+            update_session_auth_hash(request, form.user)
             return redirect('profile')
-        else:
-            form = UserChangeForm(instance=request.user)
-        return render(request, 'blog/profile.html', {'form':form})
+    else:
+        form = UserChangeForm(instance=request.user)
+    return render(request, 'blog/profile.html', {'form': form})
