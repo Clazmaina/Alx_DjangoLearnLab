@@ -151,7 +151,9 @@ class PostSearchView(ListView):
         query = self.request.GET.get('q')
         if query:
             return Post.objects.filter(
-                Q(title_icontains=query) | Q(contenticontains=query) | Q(tagsname_icontains=query)
+                title__icontains=query,
+                tags__name__icontains=query,
+                content__icontains=query
             ).distinct()
         else:
             return Post.objects.none()
