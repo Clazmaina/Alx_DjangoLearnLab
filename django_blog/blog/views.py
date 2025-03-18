@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from .forms import CommentForm, PostForm
+from django.db.models import Q
+from taggit.models import Tag
 
 def register(request):
     if request.method == 'POST':
@@ -37,7 +39,21 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-published_date']  
+    ordering = ['-published_date']
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        if tag_slug:
+            tag = get_object_or_404(Tag, slug=tag_slug)
+            return Post.objects.filter(tags=tag)
+        return super().get_queryset()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_slug = self.kwargs.get('tag_slug')
+        if tag_slug:
+            context['tag'] = get_object_or_404(Tag, slug=tag_slug)
+        return context
 
 class PostDetailView(DetailView):
     model = Post
@@ -125,3 +141,22 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return self.request.user == comment.author
+    
+class PostSearchView(ListView):
+    model = Post
+    template_name = 'blog/post_search.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title_icontains=query) | Q(contenticontains=query) | Q(tagsname_icontains=query)
+            ).distinct()
+        else:
+            return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q')
+        return context

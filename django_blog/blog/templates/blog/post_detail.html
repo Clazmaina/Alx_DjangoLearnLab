@@ -15,6 +15,12 @@
     <p>{{ post.content }}</p>
     <p>Published on: {{ post.published_date }} by {{ post.author }}</p>
 
+    <p>Tags:
+        {% for tag in post.tags.all %}
+            <a href="{% url 'post_list_by_tag' tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
     <h3>Comments</h3>
     {% for comment in post.comments.all %}
         <div>
@@ -29,7 +35,7 @@
     {% endfor %}
 
     {% if user.is_authenticated %}
-        <h3><a href="{% url 'comment_new' post.pk %}">Add a Comment</a></h3>  {# Link to CommentCreateView #}
+        <h3><a href="{% url 'comment_new' post.pk %}">Add a Comment</a></h3>
     {% else %}
         <p><a href="{% url 'login' %}">Log in</a> to add a comment.</p>
     {% endif %}
