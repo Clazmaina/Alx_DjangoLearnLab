@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, permissions, filters, generics, status
 from .models import Post, Comment, Like
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from notifications.models import Notification
 from rest_framework.response import Response
 
