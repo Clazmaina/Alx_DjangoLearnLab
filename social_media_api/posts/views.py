@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, permissions, filters, generics, status
-from .models import Post, Comment, Like
+from .models import Post, Comment, Like, pk
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from notifications.models import Notification
 from rest_framework.response import Response
@@ -46,7 +46,7 @@ class LikeCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         post_id = self.request.data.get('post')
-        post = get_object_or_404(Post, pk=post_id)
+        post = generics.get_object_or_404(Post, pk=pk)
 
         like, created = Like.objects.get_or_create(user=self.request.user, post=post)
 
@@ -65,8 +65,8 @@ class LikeDeleteView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        post_id = self.kwargs['post_id']
-        post = get_object_or_404(Post, pk=post_id)
+        post_id = self.kwargs['post']
+        post = generics.get_object_or_404(Post, pk=pk)
         like = get_object_or_404(Like, post=post, user=self.request.user)
         return like
 
