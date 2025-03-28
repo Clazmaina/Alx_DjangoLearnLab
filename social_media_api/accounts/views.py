@@ -58,3 +58,13 @@ class UnfollowUserView(generics.UpdateAPIView):
         
         request.user.followers.remove(user_to_unfollow)
         return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
+    
+class UserDetailView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        user = self.get_object()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
