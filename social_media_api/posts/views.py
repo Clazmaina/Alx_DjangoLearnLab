@@ -46,9 +46,9 @@ class LikeCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         post_id = self.request.data.get('post')
-        post = get_object_or_404(Post, pk=post_id)
+        post = get_object_or_404(Post, pk=post_id) 
 
-        like, created = Like.objects.get_or_create(user=self.request.user, post=post)
+        like, created = Like.objects.get_or_create(user=self.request.user, post=post) 
 
         if not created:
             raise ValidationError("You have already liked this post.")
