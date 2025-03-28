@@ -46,21 +46,19 @@ class LikeCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         post_id = self.request.data.get('post')
-        try:
-            post = Post.objects.get(pk=post_id)
-        except Post.DoesNotExist:
-            raise ValidationError("Post does not exist.")
+        post = get_object_or_404(Post, pk=post_id)
 
-        try:
-            like = serializer.save(user=self.request.user, post=post)
-            Notification.objects.create(
-                recipient=post.author,
-                actor=self.request.user,
-                verb='liked your post',
-                target=post,
-            )
-        except Exception:
+        like, created = Like.objects.get_or_create(user=self.request.user, post=post)
+
+        if not created:
             raise ValidationError("You have already liked this post.")
+        
+        Notification.objects.create(
+            recipient=post.author,
+            actor=self.request.user,
+            verb='liked your post',
+            target=post,
+        )
         
 class LikeDeleteView(generics.DestroyAPIView):
     queryset = Like.objects.all()
@@ -76,3 +74,4 @@ class LikeDeleteView(generics.DestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
