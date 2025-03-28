@@ -4,6 +4,7 @@ from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from notifications.models import Notification
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
