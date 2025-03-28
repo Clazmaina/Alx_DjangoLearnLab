@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from .models import CustomUser
@@ -32,3 +32,29 @@ class UserProfile(generics.RetrieveAPIView):
 
     def get_objects(self):
         return self.request.user
+    
+class FollowUserView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user_to_follow = self.get_object()
+        if user_to_follow == request.user:
+            return Response({"detail": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        request.user.followers.add(user_to_follow)
+        return Response({"detail": f"You are now following {user_to_follow.username}."}, status=status.HTTP_200_OK)
+
+class UnfollowUserView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user_to_unfollow = self.get_object()
+        if user_to_unfollow == request.user:
+            return Response({"detail": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        request.user.followers.remove(user_to_unfollow)
+        return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
